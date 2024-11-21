@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\suplier;
 use Illuminate\Http\Request;
 
 class suplierController extends Controller
@@ -9,9 +10,23 @@ class suplierController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('suplier.suplier');
+        $search = $request->input('search');
+
+        $data = suplier::where(
+            'nama_suplier',
+            'like',
+            "%{$search}%"
+        )->orWhere(
+            'telp',
+            'like',
+            "%{$search}%"
+        )->paginate();
+
+        return view('suplier.suplier', compact(
+            'data'
+        ));
     }
 
     /**
@@ -27,7 +42,38 @@ class suplierController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_suplier' => 'required',
+            'alamat' => 'required',
+            'telp' => 'required',
+            'email' => 'required|email',
+            'tgl_terdaftar' => 'required',
+            'status' => 'required',
+        ],[
+            'nama_suplier.required' => 'Data wajib diisi',
+            'email.required' => 'Data wajib diisi',
+            'email.email' => 'Format email tidak sesuai',
+            'telp.reqeuired' => 'Data wajib diisi',
+            'tgl_terdaftar.required' =>  'Data wajib diisi',
+            'status.required' =>  'Data wajib diisi',
+
+        ]);
+        $SaveSuplier = new suplier();
+        $SaveSuplier->nama_suplier = $request->nama_suplier; 
+        $SaveSuplier->alamat = $request->alamat;
+        $SaveSuplier->telp = $request->telp;
+        $SaveSuplier->email = $request->email;
+        $SaveSuplier->tgl_terdaftar = $request->tgl_terdaftar;
+        $SaveSuplier->status = $request->status;
+        $SaveSuplier->save();
+         
+        return redirect('/suplier')->with(
+            'message',
+            'Data' . $request->nama_suplier . 'berhasil ditambahkan'
+
+        );
+        
+
     }
 
     /**
