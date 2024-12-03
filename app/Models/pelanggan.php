@@ -16,10 +16,5 @@ class pelanggan extends Model
         'kota',
         'provinsi',
 
-
-
-
-
-
     ];
 }

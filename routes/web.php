@@ -67,8 +67,8 @@ Route::middleware(['auth', 'cekLevel:superadmin,admin'])->group(function(){
             Route::get('/suplier/add', 'create');
             Route::post('suplier/add', 'store');
 
-            Route::get('suplier/edit/{id}', 'edit');
-            Route::post('suplier/edit/{id}', 'update');
+            Route::get('/suplier/edit/{id}', 'edit');
+            Route::post('/suplier/edit/{id}', 'update');
 
             Route::get('/suplier/{id}', 'destroy');
         });
@@ -80,10 +80,11 @@ Route::middleware(['auth', 'cekLevel:superadmin,admin'])->group(function(){
 
             Route::get('/pelanggan', 'index');
 
-            Route::get('/pelanggan', 'create');
-            Route::post('/pelanggan', 'store');
+            Route::get('/pelanggan/add', 'create');
+            Route::post('/pelanggan/add', 'store');
             
-
+            Route::get('/pelanggan/edit/{id}', 'edit');
+            Route::post('/pelanggan/edit/{id}', 'update');
 
 
 
