@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\stok;
+use App\Models\suplier;
 use Illuminate\Http\Request;
 
 class stokController extends Controller
@@ -9,9 +11,16 @@ class stokController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(request $r)
     {
-        return view('stok.stok');
+        $search = $r->input('search');
+        $getData = stok::with('getSuplier')
+        ->where('kode_barang', 'like', "%{$search}%")
+        ->orWhere('nama_barang', 'like', "%{$search}%")
+        ->paginate(6);
+        return view('stok.stok', compact(
+            'getData'
+        ));
     }
 
     /**
@@ -19,7 +28,10 @@ class stokController extends Controller
      */
     public function create()
     {
-        return view('stok.addstok');
+        $getSuplier = suplier::all();
+        return view('stok.addstok', compact(
+            'getSuplier'
+        ));
     }
 
     /**
@@ -27,7 +39,35 @@ class stokController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'kode_barang' => 'required',
+            'nama_barang' => 'required',
+            'harga' => 'required',
+            'stok' => 'required',
+            'suplier' => 'required',
+            'cabang' => 'required',
+        ],[
+             'kode_barang.required' => 'Data wajib diisi',
+             'nama_barang.required' => 'Data wajib diisi',
+             'harga.required' => 'Data wajib diisi',
+             'stok.required' => 'Data wajib diisi',
+             'suplier.required' => 'Data wajib diisi',
+             'cabang.required' => 'Data wajib diisi',
+        ]);
+
+        $saveStok = new stok();
+        $saveStok->kode_barang = $request->kode_barang;
+        $saveStok->nama_barang = $request->nama_barang;
+        $saveStok->harga = $request->harga;
+        $saveStok->stok = $request->stok;
+        $saveStok->suplier_id = $request->suplier;
+        $saveStok->cabang = $request->cabang;
+        $saveStok->save();
+
+        return redirect('/stok')->with(
+            'message',
+            'Data barang' . $request->nama_barang. ' berhasil ditambahkan'
+        );
     }
 
     /**
