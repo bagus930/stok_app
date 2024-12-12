@@ -67,8 +67,13 @@ Route::middleware(['auth', 'cekLevel:superadmin,admin'])->group(function(){
       * ini route barang masuk
       */
     Route::controller(barangMasukController::class)->group(function(){
+        
         Route::get('/barang-masuk', 'index');
+
         Route::get('/barang-masuk/add', 'create');
+        Route::post('/barang-masuk/add', 'store');
+
+
     });
     
      /**
